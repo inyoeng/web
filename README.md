@@ -8,7 +8,7 @@ ___
 **참고페이지** jQuery페이지:
 Click [here](https://jquery.com/)
 
-**유용한 사이트**
+**JSON 유용한 사이트**
 
 * JSON Diff checker [here]( http://www.jsondiff.com/)
 * JSON Beautifier/editor: [here]( https://jsonbeautifier.org/)
