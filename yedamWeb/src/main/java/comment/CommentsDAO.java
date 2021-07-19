@@ -49,7 +49,7 @@ public class CommentsDAO extends DAO {
 			map.put("id", currentId);
 			map.put("name", comment.getName());
 			map.put("content", comment.getContent());
-			map.put("code", "Success");
+			map.put("code", "success");
 
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -90,4 +90,72 @@ public class CommentsDAO extends DAO {
 		}
 		return list;
 	}
+	
+	//삭제
+	public HashMap<String, Object> delete(Comments comment) {
+		//얘를 가지고 와서 html updateComment ㄱㄱ
+		
+		connect();
+		String sql ="delete from comments where id =?";
+		HashMap<String, Object> map = null;
+		
+		try {
+			psmt = conn.prepareStatement(sql);
+			psmt.setString(1, comment.getId());
+			int r = psmt.executeUpdate();
+			System.out.println(r+"건 삭제되었습니다.");
+			
+			map = new HashMap<String, Object>(); //같은 타입으로 넘겨주기. 
+			map.put("id", comment.getId());
+			map.put("code","success");
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			map = new HashMap<String, Object>();//앞단에서 에러나면 선언 자체를 못하니까. 
+			map.put("code", "error!");
+		}
+		return map;
+		
+	}
+	
+	
+	
+	
+	
+	
+	//수정
+	
+	public HashMap<String, Object> update(Comments comment) {
+		//얘를 가지고 와서 html updateComment ㄱㄱ
+		
+		connect();
+		String sql ="update comments set name=? , content=? where id =?";
+		HashMap<String, Object> map = null;
+		
+		try {
+			psmt = conn.prepareStatement(sql);
+			psmt.setString(1, comment.getName());
+			psmt.setString(2, comment.getContent());
+			psmt.setString(3, comment.getId());
+			int r = psmt.executeUpdate();
+			System.out.println(r+"건 변경되었습니다.");
+			
+			map = new HashMap<String, Object>(); //같은 타입으로 넘겨주기. 
+			map.put("id", comment.getId());
+			map.put("name", comment.getName());
+			map.put("content", comment.getContent());
+			map.put("code","success");
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			map = new HashMap<String, Object>();//앞단에서 에러나면 선언 자체를 못하니까. 
+			map.put("code", "error!");
+		}
+		return map;
+		
+	}
+	
+	
+	
 }
+	

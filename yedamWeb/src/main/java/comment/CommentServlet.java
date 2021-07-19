@@ -52,36 +52,52 @@ public class CommentServlet extends HttpServlet {
 			sb.append("</data>");
 			sb.append("</response>");
 			out.print(sb.toString()); // <code>error</code> <data>cmd null</data> =>xml 부모, 자식이 됨
-										// json => {"code":"error", data:"cmd null"}=> 데티어 쉽게 가져올 수 ..
+									  // json => {"code":"error", data:"cmd null"}=> 데티어 쉽게 가져올 수 ..
 
 		} else if (cmd.equals("selectAll")) {// 전체 조회 기능.
 			List<HashMap<String, Object>> list = CommentsDAO.getInstance().selectAll();
 			out.print(selectAll(list));
-		}else if(cmd.equals("insert")) {
+
+		} else if (cmd.equals("insert")) {
 			Comments comment = new Comments();
 			comment.setContent(request.getParameter("content"));
 			comment.setName(request.getParameter("name"));
 			HashMap<String, Object> map = CommentsDAO.getInstance().insert(comment);
 			out.println(toXML(map));
+
+		} else if (cmd.equals("update")) {
+			response.setContentType("text/xml;charset=utf-8");// xml로 바꾸기
+			Comments comment = new Comments();
+			comment.setId(request.getParameter("id"));
+			comment.setName(request.getParameter("name"));
+			comment.setContent(request.getParameter("content"));
+			HashMap<String, Object> map = CommentsDAO.getInstance().update(comment);
+			out.println(toXML(map));// 아작스 호출위해 xml파일로
+
+		} else if (cmd.equals("delete")) {
+			response.setContentType("text/xml;charset=utf-8");
+			Comments comment = new Comments();
+			comment.setId(request.getParameter("id"));
+			HashMap<String, Object> map = CommentsDAO.getInstance().delete(comment);
+			out.println(toXML(map));
+
 		}
 	}
-	
-	
-	//xml로 만들기~
+
+	// xml로 만들기~
 	private String toXML(HashMap<String, Object> map) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("<result>");
 		sb.append("<code>");
 		sb.append(map.get("code"));
 		sb.append("</code>");
-		
-		sb.append("<data>"); //data 영역
+
+		sb.append("<data>"); // data 영역
 		Gson gson = new GsonBuilder().create();
 		sb.append(gson.toJson(map));
 		sb.append("</data>");
 		sb.append("</result>");
-		
-		
+
 		return sb.toString();
 	}
 
@@ -109,10 +125,10 @@ public class CommentServlet extends HttpServlet {
 
 		return sb.toString();
 	}
-	
-	//변경
-	public HashMap<String, Object> update(Comments comment){
-		
+
+	// 변경
+	public HashMap<String, Object> update(Comments comment) {
+
 		return null;
 	}
 

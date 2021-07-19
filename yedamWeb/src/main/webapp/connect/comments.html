@@ -3,8 +3,9 @@
 
 <head>
 	<meta charset="UTF-8">
-	<title>Coments.htlm</title>
+	<title>Comments.html</title>
 	<script>
+	
 		window.onload = function () {
 			loadCommentList();
 		}
@@ -16,6 +17,8 @@
 			xhtp.open('get', '../CommentServlet?cmd=selectAll');
 			xhtp.send();
 			xhtp.onreadystatechange = loadCommentResult;
+			
+	
 		}
 
 		//조회결과
@@ -107,7 +110,7 @@
 			let commentDiv = document.getElementById(commentId); //div테그 생성
 			let updateFormDiv = document.getElementById('commentUpdate');
 
-			commentDiv.appendChild(updateFormDiv); //수정 화면에 id기준 정보 보여주기 
+			commentDiv.after(updateFormDiv); //수정 화면에 id기준 정보 보여주기 chld말고 after해줌. 
 			let comment = commentDiv.comment; //id, name, content 정보 불러                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
 			updateForm.id.value = comment.id;
 			updateForm.name.value = comment.name;
@@ -117,7 +120,74 @@
 
 		//ajax호출 수정
 		function updateComment(){
+			const id = document.updateForm.id.value;
+			const name = document.updateForm.name.value;
+			const content = document.updateForm.content.value;
+			const param = '?cmd=update&id='+id+'&name='+name+'&content='+content;//servlet페이제에서 넘기던 방식대로
+			const xhtp = new XMLHttpRequest();
+			xhtp.open('get','../CommentServlet' + param);//'요청방식''요청 페이지'
+			xhtp.send();
+			xhtp.onreadystatechange = updateResult;
 			
+		}
+		
+		//ajax호출 콜백 함수.
+		function updateResult(){
+			if(this.readyState == 4 ){
+				if(this.status == 200){
+					console.log(this.responseXML);
+					const xmlDoc = this.responseXML;
+					const code = xmlDoc.getElementsByTagName('code')[0].firstChild.nodeValue;
+					if(code =='success'){
+						const comment = JSON.parse(xmlDoc.getElementsByTagName('data')[0].firstChild.nodeValue);
+						const listDiv = document.getElementById("commentList");
+						const commentDiv = makeCommentView(comment); //새 div테그 만들기
+						const oldCommentDiv = document.getElementById(comment.id); //아이디 값 바구기.
+						listDiv.replaceChild(commentDiv, oldCommentDiv);
+						document.getElementById("commentUpdate").style.display="none";
+						alert("수정완료!")
+					}else{
+						alert('에러발생!');
+					}
+			}
+		}
+		}
+		
+		
+		//취소바튼
+		function cancleUpdate(){
+			document.getElementById("commentUpdate").style.display = 'none';   
+			//display속성이 none이면 화면에서 안보이게 됨.
+
+		}
+		
+		
+		//id 기준 삭제하기
+		function comfirmDeletion(id){
+			const xhtp = new XMLHttpRequest();
+			xhtp.open('get','../CommentServlet?cmd=delete&id='+id);
+			xhtp.send();
+			xhtp.onreadystatechange= deleteResult;
+		}
+		
+		//삭제 콜백
+		function deleteResult(){
+			if(this.readyState == 4 ){
+				if(this.status == 200){
+					console.log(this.responseXML);
+					const xmlDoc = this.responseXML;
+					const code = xmlDoc.getElementsByTagName('code')[0].firstChild.nodeValue;
+					if(code =='success'){
+						const comment = JSON.parse(xmlDoc.getElementsByTagName('data')[0].firstChild.nodeValue);
+						const listDiv = document.getElementById("commentList");
+						const oldCommentDiv = document.getElementById(comment.id); //아이디 값 바구기.
+						listDiv.removeChild(oldCommentDiv);
+						alert("삭제완료!")
+					}else{
+						alert('에러발생!');
+					}
+			}
+		}
 		}
 	</script>
 
