@@ -1,5 +1,5 @@
 # web
-___
+
 >7.13.~7.20.
 ___
 - js, servlet, json, ajax, jQuery이용한 웹페이지 구현 연습. 
